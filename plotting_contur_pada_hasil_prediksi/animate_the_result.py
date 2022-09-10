@@ -2,7 +2,6 @@ import os
 import numpy as np
 import matplotlib.pyplot as plt
 
-
 '''
     os.path.dirname(os.path.realpath(__file__)) # digunakan untuk .py
     os.getwcd() # digunakan untuk .ipynb
@@ -21,6 +20,7 @@ data_source_path = os.path.join(script_path, 'data_source')
 
 X = np.load(f'{data_source_path}/X.npy')
 y = np.load(f'{data_source_path}/y.npy')
+
 
 sorted_prediction_dir = sorted(os.listdir(
     prediction_history_path), key=lambda x: (len(x), x))
@@ -46,9 +46,6 @@ def plot_decision_boundary(X, y):
         loss = np.load(f'{loss_history_path}/{loss_file}')
         accuracy = np.load(f'{accuracy_history_path}/{accuracy_file}')
 
-        mng = plt.get_current_fig_manager()
-        mng.resize(*mng.window.maxsize())
-
         plt.contourf(xx, yy, y_pred, cmap=plt.cm.RdYlBu, alpha=.8)
         plt.scatter(X[:, 0], X[:, 1], c=y, cmap=plt.cm.RdYlBu,
                     edgecolors='white', linewidths=.5)
@@ -65,28 +62,8 @@ def plot_decision_boundary(X, y):
 
         t.set_bbox(dict(facecolor='white', alpha=0.5))
 
-        plt.pause(.001)
-
+        plt.pause(.0001)
     plt.show()
 
 
 plot_decision_boundary(X, y)
-
-# jika ingin dengan plot line
-# '''
-# # df = df[500:700]
-
-# # for i in range(len(df.columns)-1):
-# #     plt.clf()
-
-# #     plt.plot(df.index, df.iloc[:, i])
-# #     plt.plot(df.index, df.iloc[:, -1])
-
-# #     mng = plt.get_current_fig_manager()
-# #     mng.resize(*mng.window.maxsize())
-
-# #     plt.ylim([df.iloc[:, -1].min() - 1, df.iloc[:, -1].max() + 1])
-# #     plt.pause(.01)
-
-# # plt.show()
-# '''
