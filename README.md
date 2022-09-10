@@ -1,2 +1,3 @@
 # Python
-all my python projects here
+
+Semua project mengenai python khususnya data science, dan ML atau DL. 
