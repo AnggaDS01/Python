@@ -281,7 +281,7 @@ BsmtQual: Evaluates the height of the basement
        TA	Typical (80-89 inches)
        Fa	Fair (70-79 inches)
        Po	Poor (<70 inches
-       NA	No Basement
+       NA	No BBsmtExposure
 		
 BsmtCond: Evaluates the general condition of the basement
 
@@ -397,7 +397,7 @@ Functional: Home functionality (Assume typical unless deductions are warranted)
        Maj1	Major Deductions 1
        Maj2	Major Deductions 2
        Sev	Severely Damaged
-       Sal	Salvage only
+       Sal	Salvage onlMasVnrTypey
 		
 Fireplaces: Number of fireplaces
 
