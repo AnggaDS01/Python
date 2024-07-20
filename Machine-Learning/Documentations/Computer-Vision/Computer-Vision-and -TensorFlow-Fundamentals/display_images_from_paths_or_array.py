@@ -50,9 +50,6 @@ def display_images(images, titles=None, figsize_per_image:tuple=(3, 3), is_gray:
     plt.figure(figsize=figsize)
     
     for i, img in enumerate(images):
-        if is_gray and not is_paths:
-            img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-
         plt.subplot(num_rows, num_columns * (2 if show_histogram else 1), (2 * i + 1 if show_histogram else i + 1))
         if isinstance(img, np.ndarray):
             plt.imshow(img, cmap='gray' if is_gray else None)
