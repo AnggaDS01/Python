@@ -21,7 +21,6 @@ def flip_coordinate_and_image_horizontal_in_tf_dataset(image, keypoint):
         >>>
         >>> flipped_image, flipped_keypoints = flip_coordinate_and_image_horizontal_in_tf_dataset(image, keypoints)
     """
-    image = tf.image.flip_left_right(image)
 
     flipped_keypoints = []
     for i in range(len(keypoint)):
@@ -31,6 +30,7 @@ def flip_coordinate_and_image_horizontal_in_tf_dataset(image, keypoint):
             flipped_keypoints.append(keypoint[i])
     flipped_keypoints = tf.stack(flipped_keypoints)
 
+    image = tf.image.flip_left_right(image)
     return image, flipped_keypoints
 
 def flip_coordinate_and_image_vertical_in_tf_dataset(image, keypoint):
@@ -54,7 +54,6 @@ def flip_coordinate_and_image_vertical_in_tf_dataset(image, keypoint):
         >>>
         >>> flipped_image, flipped_keypoints = flip_coordinate_and_image_vertical_in_tf_dataset(image, keypoints)
     """
-    image = tf.image.flip_up_down(image)
 
     flipped_keypoints = []
     for i in range(len(keypoint)):
@@ -64,4 +63,5 @@ def flip_coordinate_and_image_vertical_in_tf_dataset(image, keypoint):
             flipped_keypoints.append(keypoint[i])
     flipped_keypoints = tf.stack(flipped_keypoints)
 
+    image = tf.image.flip_up_down(image)
     return image, flipped_keypoints
