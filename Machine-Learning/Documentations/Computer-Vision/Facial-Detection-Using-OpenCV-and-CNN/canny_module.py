@@ -58,6 +58,8 @@ def tf_compute_canny(image, keypoint, threshold1, threshold2):
         >>> keypoints = tf.random.normal([30])
         >>> canny_image, keypoints = tf_compute_canny(image, keypoints, threshold1=100, threshold2=200)
     """
-    canny_edges, keypoint = tf.py_function(func=compute_canny, inp=[image, keypoint, threshold1, threshold2], Tout=[tf.float32, keypoint.dtype])
+    canny_edges, keypoint_canny = tf.py_function(func=compute_canny, inp=[image, keypoint, threshold1, threshold2], Tout=[tf.float32, keypoint.dtype])
+    canny_edges.set_shape(image.shape)
+    keypoint_canny.set_shape((keypoint.shape))
     canny_edges = (canny_edges / 255) * 1.0
-    return canny_edges, keypoint
+    return canny_edges, keypoint_canny
