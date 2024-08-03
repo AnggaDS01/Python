@@ -1,7 +1,3 @@
-Sure, I can help you draft a detailed and professional `README.md` for your GitHub repository. Here's a sample that you can use or modify according to your needs:
-
----
-
 # Python
 
 ## Documentation and Portfolio for Python Programming Language
@@ -69,7 +65,3 @@ This repository is licensed under the MIT License. See the [LICENSE](LICENSE) fi
 ### Contact
 
 If you have any questions, suggestions, or feedback, feel free to contact me via email at anggadwisunarto3@gmail.com.
-
----
-
-Feel free to replace placeholder text (e.g., your email address) with your actual details. You can also expand each section with more specific information related to your projects and learning experiences.
