@@ -50,7 +50,7 @@ def tf_compute_sobel(image, keypoint, ksize):
         >>> sobel_image, keypoints = tf_compute_sobel(image, keypoints, ksize=3)
     """
     sobelG, keypoint_sobel = tf.py_function(func=compute_sobel, inp=[image, keypoint, ksize], Tout=[tf.float32, keypoint.dtype])
+    sobelG = (sobelG / tf.reduce_max(sobelG)) * 1.0
     sobelG.set_shape(image.shape)
     keypoint_sobel.set_shape((keypoint.shape))
-    sobelG = (sobelG / tf.reduce_max(sobelG)) * 1.0
     return sobelG, keypoint_sobel
