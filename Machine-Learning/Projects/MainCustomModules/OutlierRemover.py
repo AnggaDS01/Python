@@ -61,9 +61,4 @@ class OutlierRemover(StatAnalyzer):
     non_outlier_dfs = pd.concat(non_outlier_dfs, axis=1)
     
     # Return the output dataframe
-    print("Original DataFrame")
-    display(original_dfs)
-    print("Outliers DataFrame")
-    display(outlier_dfs)
-    print("Non Outliers DataFrame")
-    display(non_outlier_dfs)
+    return original_dfs, outlier_dfs, non_outlier_dfs

@@ -1,6 +1,6 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from itertools import combinations_with_replacement
+from itertools import combinations
 from sklearn.metrics import classification_report, confusion_matrix
 from scipy.stats import chi2_contingency
 import seaborn as sns
@@ -14,14 +14,13 @@ class FeaturePlotter:
     def __init__(self):
         pass
 
-    def plot_features(self, data, plot_type='scatter', **kwargs):
+    def plot_features(self, data, plot_type='scatter', hue=None, **kwargs):
         cat_features = data.select_dtypes(exclude='number')
         num_features = data.select_dtypes(exclude='object')
 
         if plot_type == 'scatter':
-            num_subplots = len(
-                list(combinations_with_replacement(num_features, 2)))
-            feature_pairs = combinations_with_replacement(num_features, 2)
+            feature_pairs = list(combinations(num_features.columns, 2))
+            num_subplots = len(feature_pairs)
         else:
             num_subplots = len(data.columns)
 
@@ -40,17 +39,64 @@ class FeaturePlotter:
             for i, feature in enumerate(data):
                 plt.subplot(num_rows, num_cols, i+1)
                 if plot_type == 'boxplot' and np.issubdtype(data[feature], np.number):
-                    sns.boxplot(data=num_features, x=feature, **kwargs)
+                    sns.boxplot(data=num_features, x=feature, hue=hue, **kwargs)
                 elif plot_type == 'histogram' and np.issubdtype(data[feature], np.number):
-                    sns.histplot(data=num_features, x=feature, **kwargs)
+                    sns.histplot(data=num_features, x=feature, hue=hue, **kwargs)
                 elif not np.issubdtype(data[feature], np.number):
                     self.__plot_count(feature, cat_features)
         # Adjust the layout and show the figure
         plt.tight_layout()
         plt.show()
 
-    # Definisikan fungsi plot_histograms
-    def plot_histograms(self, data, target_col, feature_cols, sample_mean=False, **kwargs):
+    def plots_scatter(self, data, target_column_name=None, figsize_per_image=(6, 4), figsize_legend=(2,2), left_idx=0, right_idx=None):
+            if right_idx is None:
+                right_idx = data.select_dtypes(exclude='object').shape[1]
+            
+            # Ambil 3 kolom pertama dari fitur numerik
+            data_columns_categorical_features = data.select_dtypes(exclude='object').iloc[:, slice(left_idx, right_idx)].columns
+            data_column_numeric_features_and_label=np.append(data_columns_categorical_features, [target_column_name])
+            data_numeric_features_and_label=data[data_column_numeric_features_and_label]
+
+            # Buat pasangan fitur unik
+            feature_pairs = list(combinations(data_columns_categorical_features, 2))
+
+            # Tentukan jumlah subplot
+            num_subplots = len(feature_pairs)
+
+            # Tentukan ukuran grid subplot
+            num_rows = int(np.sqrt(num_subplots))
+            num_cols = int(np.ceil(num_subplots / num_rows))
+
+            # Tentukan ukuran figure        
+            figsize = (num_cols * figsize_per_image[0], num_rows * figsize_per_image[1])
+
+            # Plot scatterplot untuk setiap pasangan fitur
+            plt.figure(figsize=figsize)
+            for idx_subplot, (col1, col2) in enumerate(feature_pairs, 1):
+                ax = plt.subplot(num_rows, num_cols, idx_subplot)
+                
+                if idx_subplot == 1:
+                    sns.scatterplot(data=data_numeric_features_and_label, x=col1, y=col2, hue=target_column_name, ax=ax, legend=True)
+                    handles, labels = ax.get_legend_handles_labels()
+                    plt.legend(handles, labels, loc='lower left', bbox_to_anchor=(0, 1), title=target_column_name)
+                else:
+                    sns.scatterplot(data=data_numeric_features_and_label, x=col1, y=col2, hue=target_column_name, legend=False)
+                    
+                plt.xticks(rotation=25)
+
+            # Menyediakan ruang untuk legend di sebelah kanan
+            plt.tight_layout()
+
+            # Buat figure terpisah untuk legend
+            plt.figure(figsize=figsize_legend)
+            plt.legend(handles, labels, loc='upper center', title=target_column_name)
+            plt.axis('off')  # Menyembunyikan axis
+
+            # Tampilkan figure
+            plt.show()
+
+    # Definisikan fungsi plots_histogram
+    def plots_histogram(self, data, target_col, feature_cols, sample_mean=False, **kwargs):
         # Loop untuk setiap kolom target
         for target in feature_cols:
             # Buat dataframe kosong untuk menyimpan hasil sampling acak
@@ -202,11 +248,6 @@ class FeaturePlotter:
         plt.xlabel('Predicted Label', fontsize=fs_label)
         plt.title('confusion matrix', fontsize=fs_title)
         plt.show()
-
-    def __plot_scatter(self, data, feature_pairs, num_cols, num_rows, **kwargs):
-        for idx, col in enumerate(list(feature_pairs)):
-            plt.subplot(num_rows, num_cols, idx+1)
-            sns.scatterplot(data=data, x=col[0], y=col[1], **kwargs)
 
     def __plot_count(self, feature, cat_features, **kwargs):
         ax = sns.countplot(data=cat_features, x=feature, **kwargs)
