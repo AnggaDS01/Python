@@ -38,6 +38,15 @@ face_cascade = cv2.CascadeClassifier(cv2.data.haarcascades + 'haarcascade_fronta
 # Start video capture
 cap = cv2.VideoCapture(0)
 
+# Initialize variables for smoothing
+smooth_x, smooth_y, smooth_w, smooth_h = [], [], [], []
+smoothing_factor = 8
+
+def moving_average(values, window_size):
+    if len(values) < window_size:
+        return values[-1]
+    return np.mean(values[-window_size:], axis=0)
+
 while True:
     ret, frame = cap.read()
     if not ret:
@@ -49,36 +58,58 @@ while True:
     # Detect faces in the frame
     faces = face_cascade.detectMultiScale(gray, scaleFactor=1.3, minNeighbors=5)
 
-    for (x, y, w, h) in faces:
-        # Extract the face ROI
-        face = frame[y:y+h, x:x+w]
+    if len(faces) > 0:
+        # Get the first detected face
+        x, y, w, h = faces[0]
 
-        # Resize the face to 96x96 pixels
+        # Update the smoothing variables
+        smooth_x.append(x)
+        smooth_y.append(y)
+        smooth_w.append(w)
+        smooth_h.append(h)
+
+        # Apply moving average to smooth the coordinates
+        avg_x = moving_average(smooth_x, smoothing_factor)
+        avg_y = moving_average(smooth_y, smoothing_factor)
+        avg_w = moving_average(smooth_w, smoothing_factor)
+        avg_h = moving_average(smooth_h, smoothing_factor)
+
+        # ================================================================
+        face = frame[int(avg_y):int(avg_y)+int(avg_h), int(avg_x):int(avg_x)+int(avg_w)]
         resized_face = cv2.resize(face, (96, 96))
-
-        # Preprocess the face for the model
         preprocessed_face = preprocess_image(resized_face)
-
-        # For demonstration purposes, we will display the resized face
-        cv2.imshow('Resized Face', preprocessed_face[0])
-
-        # ==================================================================================
-        # Predict keypoints
         keypoints = model.predict(preprocessed_face, verbose=0)[0]
-        print(keypoints[0])
+        cv2.imshow('Resized Face', preprocessed_face[0])
+        
+        left_eye_center_x = keypoints[0]
+        left_eye_center_y = keypoints[1]
 
-        # # Rescale keypoints to match the face ROI
-        # keypoints = keypoints * 48 + 48  # Reverse the normalization
-        # keypoints = keypoints.reshape(-1, 2) * [w / 96, h / 96]
-        # print(keypoints)
+        right_eye_center_x = keypoints[2]
+        right_eye_center_y = keypoints[3]
 
-        # Draw keypoints on the original frame
-        # for (kx, ky) in keypoints:
-        #     cv2.circle(frame, (int(x + kx), int(y + ky)), 1, (0, 255, 0), 2)
-        # ==================================================================================
+        # Scale keypoints back to the original face dimensions
+        scale_x = avg_w / 96.0
+        scale_y = avg_h / 96.0
 
-        # Draw a rectangle around the detected face
-        cv2.rectangle(frame, (x, y), (x+w, y+h), (255, 0, 0), 2)
+        left_eye_center_x = keypoints[0] * scale_x + avg_x
+        left_eye_center_y = keypoints[1] * scale_y + avg_y
+        cv2.circle(frame, (int(left_eye_center_x), int(left_eye_center_y)), 2, (0, 255, 0), -1)
+
+        left_eye_inner_corner_x = keypoints[4] * scale_x + avg_x
+        left_eye_inner_corner_y = keypoints[5] * scale_x + avg_x
+        cv2.circle(frame, (int(left_eye_inner_corner_x), int(left_eye_inner_corner_y)), 2, (0, 255, 0), -1)
+
+        left_eye_outer_corner_x = keypoints[6] * scale_x + avg_x
+        left_eye_outer_corner_y = keypoints[7] * scale_x + avg_x
+        cv2.circle(frame, (int(left_eye_outer_corner_x), int(left_eye_outer_corner_x)), 2, (0, 255, 0), -1)
+
+        right_eye_center_x = keypoints[2] * scale_x + avg_x
+        right_eye_center_y = keypoints[3] * scale_y + avg_y
+        cv2.circle(frame, (int(right_eye_center_x), int(right_eye_center_y)), 2, (0, 255, 0), -1)
+        # ================================================================
+        
+        # Draw a rectangle around the detected face with smoothed coordinates
+        cv2.rectangle(frame, (int(avg_x), int(avg_y)), (int(avg_x + avg_w), int(avg_y + avg_h)), (255, 0, 0), 2)
 
     # Display the output frame with detected faces and keypoints
     cv2.imshow('Facial Keypoints Detection', frame)
@@ -90,5 +121,3 @@ while True:
 # Release the capture and close windows
 cap.release()
 cv2.destroyAllWindows()
-
-### Perlu ada penyesuaian lagi, untuk hasil prediksi dari keypoint, karna koordinat prediksi, berlaku untuk ukuran 96x96 pixel sehingga perlu ada kalibrasi lagi.
