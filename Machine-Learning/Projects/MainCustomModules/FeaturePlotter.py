@@ -14,174 +14,93 @@ class FeaturePlotter:
     def __init__(self):
         pass
 
-    def plots_count_features(self, data, hue=None, figsize_per_image=(5, 7), left_idx=0, right_idx=None, show_grid=False, stat='count', **countplot_kwargs):
-        categorical_data=data.select_dtypes(exclude='number')
-        if right_idx is None:
-            right_idx = categorical_data.shape[1]
-        data_columns_categorical_features=categorical_data.iloc[:, left_idx:right_idx].columns
+    def _display_custom_legend(self, hue, handles, labels, legend_figsize):
+        plt.figure(figsize=legend_figsize)
+        plt.legend(handles, labels, loc='upper center', title=hue)
+        plt.axis('off')
 
-        # Tentukan jumlah subplot
-        num_subplots = len(data_columns_categorical_features)
-
-        # Tentukan ukuran grid subplot
+    def _calculate_fig_layout(self, num_features, subplot_figsize):
+        num_subplots = len(num_features)
         num_rows = int(np.sqrt(num_subplots))
         num_cols = int(np.ceil(num_subplots / num_rows))
-        # Tentukan ukuran figure        
-        figsize = (num_cols * figsize_per_image[0], num_rows * figsize_per_image[1])
+        fig_size = (num_cols * subplot_figsize[0], num_rows * subplot_figsize[1])
+        plt.figure(figsize=fig_size)
+        return num_rows, num_cols
 
-        # Plot scatterplot untuk setiap pasangan fitur
-        plt.figure(figsize=figsize)
+    def _annotate_bars(self, ax):
+        for bar in ax.patches:
+            height = f'{bar.get_height():.2f}'
+            x = bar.get_x() + bar.get_width() / 2
+            y = bar.get_y() + bar.get_height()
+            ax.text(x, y, height, ha="center", va="bottom")
+        max_height = max([bar.get_height() for bar in ax.patches])
+        ax.set_ylim(0, max_height * 1.1)
 
-        for idx_subplot, categorical_column_data in enumerate(data_columns_categorical_features, 1):
-            ax = plt.subplot(num_rows, num_cols, idx_subplot)
-            sns.countplot(data=data, x=categorical_column_data, hue=hue, legend=(idx_subplot==1), ax=ax, stat=stat, **countplot_kwargs)
-            if idx_subplot == 1 and hue:
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend_.remove()
-
-            for p in ax.patches:
-                if stat == 'count':
-                    n_value = f'{p.get_height():.0f}'
-                else:
-                    n_value = f'{p.get_height():.2f}'
-                x = p.get_x() + p.get_width() / 2
-                y = p.get_y() + p.get_height()
-                ax.text(x, y, n_value, ha="center", va="bottom")
-            # Tambahkan padding di bagian atas axes
-            y_max = max([p.get_height() for p in ax.patches])
-            ax.set_ylim(0, y_max * 1.1)
-
-            plt.xticks(rotation=90)
-            plt.grid(show_grid)
-        plt.tight_layout()
-
-        if hue:
-            plt.figure(figsize=(2,2))
-            plt.legend(handles, labels, loc='upper center', title=hue)
-            plt.axis('off')  # Menyembunyikan axis
-        plt.show()
-
-    def plots_scatter_features(self, data, hue=None, figsize_per_image=(6, 4), figsize_legend=(2,2), left_idx=0, right_idx=None, **scatter_kwargs):
-        numerical_data=data.select_dtypes(exclude='object')
-        
-        if right_idx is None:
-            right_idx = numerical_data.shape[1]
-
-        # Ambil 3 kolom pertama dari fitur numerik
-        data_columns_numerical_features=numerical_data.iloc[:, left_idx:right_idx].columns
-
-        # Buat pasangan fitur unik
-        feature_pairs = list(combinations(data_columns_numerical_features, 2))
-
-        # Tentukan jumlah subplot
-        num_subplots = len(feature_pairs)
-
-        # Tentukan ukuran grid subplot
-        num_rows = int(np.sqrt(num_subplots))
-        num_cols = int(np.ceil(num_subplots / num_rows))
-
-        # Tentukan ukuran figure        
-        figsize = (num_cols * figsize_per_image[0], num_rows * figsize_per_image[1])
-
-        # Plot scatterplot untuk setiap pasangan fitur
-        plt.figure(figsize=figsize)
-        for idx_subplot, (col1, col2) in enumerate(feature_pairs, 1):
+    def _plot_features(self, data_all, feature_columns, hue, plot_func, subplot_figsize, legend_figsize, show_grid, x_ticks_rotation, **plot_kwargs):
+        num_rows, num_cols = self._calculate_fig_layout(feature_columns, subplot_figsize)
+        for idx_subplot, feature in enumerate(feature_columns, 1):
             ax = plt.subplot(num_rows, num_cols, idx_subplot)
             
-            sns.scatterplot(data=data, x=col1, y=col2, hue=hue, ax=ax, legend=(idx_subplot==1), **scatter_kwargs)
-            if idx_subplot == 1 and hue:
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend_.remove()
+            if plot_func == sns.scatterplot:
+                x_feature, y_feature = feature
+                plot_func(data=data_all, x=x_feature, y=y_feature, hue=hue, legend=(idx_subplot == 1), ax=ax, **plot_kwargs)
+            else:
+                plot_func(data=data_all, x=feature, hue=hue, legend=(idx_subplot == 1), ax=ax, **plot_kwargs)
+                if plot_func == sns.countplot:
+                    self._annotate_bars(ax)
 
-            plt.xticks(rotation=25)
-
-        # Menyediakan ruang untuk legend di sebelah kanan
-        plt.tight_layout()
-
-        # Buat figure terpisah untuk legend
-        if hue:
-            plt.figure(figsize=figsize_legend)
-            plt.legend(handles, labels, loc='upper center', title=hue)
-            plt.axis('off')  # Menyembunyikan axis
-
-        # Tampilkan figure
-        plt.show()
-
-    def plots_histograms_features(self, data, hue=None, figsize_per_image=(5, 4), left_idx=0, right_idx=None, show_grid=False, **histplot_kwargs):
-        numerical_data=data.select_dtypes(exclude='object')
-        
-        if right_idx is None:
-            right_idx = numerical_data.shape[1]
-
-        data_columns_numerical_features=numerical_data.iloc[:, left_idx:right_idx].columns
-
-        # Tentukan jumlah subplot
-        num_subplots = len(data_columns_numerical_features)
-
-        # Tentukan ukuran grid subplot
-        num_rows = int(np.sqrt(num_subplots))
-        num_cols = int(np.ceil(num_subplots / num_rows))
-        # Tentukan ukuran figure        
-        figsize = (num_cols * figsize_per_image[0], num_rows * figsize_per_image[1])
-
-        # Plot scatterplot untuk setiap pasangan fitur
-        plt.figure(figsize=figsize)
-
-        for idx_subplot, numerical_column_data in enumerate(data_columns_numerical_features, 1):
-            plt.subplot(num_rows, num_cols, idx_subplot)
-            ax=sns.histplot(data=data, x=numerical_column_data, hue=hue,  legend=(idx_subplot==1),  **histplot_kwargs)
             if idx_subplot == 1 and hue:
                 legend = ax.get_legend()
                 handles = legend.legend_handles
-                labels = [t.get_text() for t in legend.texts]
+                labels = [text.get_text() for text in legend.texts]
                 ax.legend_.remove()
-            plt.xticks(rotation=90)
-            plt.grid(show_grid)
 
+            plt.xticks(rotation=x_ticks_rotation)
+            plt.grid(show_grid)
         plt.tight_layout()
 
         if hue:
-            plt.figure(figsize=(2,2))
-            plt.legend(handles, labels, loc='upper center', title=hue)
-            plt.axis('off')  # Menyembunyikan axis
+            self._display_custom_legend(hue, handles, labels, legend_figsize)
+            
         plt.show()
 
-    def plots_box_features(self, data, hue=None, figsize_per_image=(5, 4), left_idx=0, right_idx=None, show_grid=False, **boxplot_kwargs):
-        numerical_data=data.select_dtypes(exclude='object')
-        
+    def _get_feature_columns(self, data, data_type, left_idx, right_idx):
+        feature_data = data.select_dtypes(exclude=data_type)
         if right_idx is None:
-            right_idx = numerical_data.shape[1]
+            right_idx = feature_data.shape[1]
+        return feature_data.iloc[:, left_idx:right_idx].columns
 
-        data_columns_numerical_features=numerical_data.iloc[:, left_idx:right_idx].columns
+    def _generate_plots(self, data, hue, subplot_figsize, legend_figsize, left_idx, right_idx, show_grid, x_ticks_rotation, plot_func, plot_specific_kwargs, data_type):
+        feature_columns = self._get_feature_columns(data, data_type, left_idx, right_idx)
+        if plot_func == sns.scatterplot:
+            feature_pairs = list(combinations(feature_columns, 2))
+            feature_columns = feature_pairs
+        else:
+            feature_columns = feature_columns
 
-        # Tentukan jumlah subplot
-        num_subplots = len(data_columns_numerical_features)
+        self._plot_features(
+            data_all=data, 
+            feature_columns=feature_columns, 
+            hue=hue, 
+            plot_func=plot_func, 
+            subplot_figsize=subplot_figsize, 
+            legend_figsize=legend_figsize, 
+            show_grid=show_grid,
+            x_ticks_rotation=x_ticks_rotation, 
+            **plot_specific_kwargs
+        )
 
-        # Tentukan ukuran grid subplot
-        num_rows = int(np.sqrt(num_subplots))
-        num_cols = int(np.ceil(num_subplots / num_rows))
-        # Tentukan ukuran figure        
-        figsize = (num_cols * figsize_per_image[0], num_rows * figsize_per_image[1])
+    def plots_count_features(self, data, hue=None, figsize_per_image=(5, 7), figsize_legend=(2,2), left_idx=0, right_idx=None, show_grid=False, x_ticks_rotation=90, **countplot_kwargs):
+        self._generate_plots(data, hue, figsize_per_image, figsize_legend, left_idx, right_idx, show_grid, x_ticks_rotation, sns.countplot, countplot_kwargs, 'number')
 
-        # Plot scatterplot untuk setiap pasangan fitur
-        plt.figure(figsize=figsize)
+    def plots_scatter_features(self, data, hue=None, figsize_per_image=(6, 4), figsize_legend=(2,2), left_idx=0, right_idx=None,show_grid=False,  x_ticks_rotation=25, **scatter_kwargs):
+        self._generate_plots(data, hue, figsize_per_image, figsize_legend, left_idx, right_idx, show_grid, x_ticks_rotation, sns.scatterplot, scatter_kwargs, 'object')
 
-        for idx_subplot, numerical_column_data in enumerate(data_columns_numerical_features, 1):
-            plt.subplot(num_rows, num_cols, idx_subplot)
-            ax=sns.boxplot(data=data, x=numerical_column_data, hue=hue,  legend=(idx_subplot==1),  **boxplot_kwargs)
-            if idx_subplot == 1 and hue:
-                handles, labels = ax.get_legend_handles_labels()
-                ax.legend_.remove()
-            plt.xticks(rotation=90)
-            plt.grid(show_grid)
+    def plots_histograms_features(self, data, hue=None, figsize_per_image=(5, 4), figsize_legend=(2,2), left_idx=0, right_idx=None, show_grid=False, x_ticks_rotation=25, **histplot_kwargs):
+        self._generate_plots(data, hue, figsize_per_image, figsize_legend, left_idx, right_idx, show_grid, x_ticks_rotation, sns.histplot, histplot_kwargs, 'object')
 
-        plt.tight_layout()
-
-        if hue:
-            plt.figure(figsize=(2,2))
-            plt.legend(handles, labels, loc='upper center', title=hue)
-            plt.axis('off')  # Menyembunyikan axis
-        plt.show()
+    def plots_box_features(self, data, hue=None, figsize_per_image=(5, 4), figsize_legend=(2,2), left_idx=0, right_idx=None, show_grid=False, x_ticks_rotation=25, **boxplot_kwargs):
+        self._generate_plots(data, hue, figsize_per_image, figsize_legend, left_idx, right_idx, show_grid, x_ticks_rotation, sns.boxplot, boxplot_kwargs, 'object')
 
     # Definisikan fungsi plots_histogram
     def plots_histogram_with_sample_mean(self, data, target_col, feature_cols, sample_mean=False, **kwargs):
