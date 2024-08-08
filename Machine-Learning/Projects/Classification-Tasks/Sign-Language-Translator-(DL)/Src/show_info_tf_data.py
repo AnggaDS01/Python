@@ -20,9 +20,12 @@ def format_file_size(size, unit_file_size='bytes'):
 # ==================================================== DATA TRAIN ====================================================
 def show_train_files_path_info(files_path_data, kind_data, is_random=False, unit_file_size='bytes'):
     
-    idx = np.random.randint(len(files_path_data)) if is_random else 1
+    if is_random:
+        files_path_data_plot = files_path_data.take(1)
+    else:
+        files_path_data_plot = files_path_data.shuffle(buffer_size=files_path_data.cardinality().numpy()).take(1)
 
-    for file_path in files_path_data.skip(idx).take(1):
+    for file_path in files_path_data_plot:
         print('=' * 60)
         print(' PATH INFO '.center(60, '='))
         print('=' * 60)
@@ -88,9 +91,13 @@ def show_train_files_path_info(files_path_data, kind_data, is_random=False, unit
 
 # ==================================================== DATA TEST ====================================================
 def show_test_files_path_info(files_path_data, is_random=False, unit_file_size='bytes'):
-    idx = np.random.randint(len(files_path_data)) if is_random else 1
+    
+    if is_random:
+        files_path_data_plot = files_path_data.take(1)
+    else:
+        files_path_data_plot = files_path_data.shuffle(buffer_size=files_path_data.cardinality().numpy()).take(1)
 
-    for file_path in files_path_data.skip(idx).take(1):
+    for file_path in files_path_data_plot:
         print('=' * 60)
         print(' PATH INFO '.center(60, '='))
         print('=' * 60)
