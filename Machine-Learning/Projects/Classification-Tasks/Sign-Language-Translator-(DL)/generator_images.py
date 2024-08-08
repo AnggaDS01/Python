@@ -22,17 +22,17 @@ detector = mp_hands.Hands(
 
 # Define the image size and offset for cropping
 img_size = 224
-offset = 50
+offset = 10
 
 # Define the target directory and name for saving images
-target_save_dir = "./sample_image"
-img_name = "image_A"
+target_save_dir = "C:/Workspace/Python/Machine-Learning/Projects/Classification-Tasks/Sign-Language-Translator-(DL)/Assets/Datasets/SIBI dataset/Test"
+img_name = "image_test"
 
 # Initialize a counter for counting saved images
 counter = 0
 
 # Define the target amount of images to save
-target_amount = 4
+target_amount = 15
 
 # Open the webcam and start capturing frames
 cap = cv2.VideoCapture(0)
@@ -87,14 +87,19 @@ while True:
         # Save the white image to the target directory with a timestamp in its name
         cv2.imwrite(f"{target_save_dir}/{img_name}_({time.time()}).jpg", img_white)
         # Print the counter value to the console
-        print(counter)
+        if counter == target_amount:
+          print(counter)
+          print('\nStart')
+          counter=0
+        else:
+          print(counter)
 
   # Show the original frame with landmarks and connections in a window named "Original"
   cv2.imshow("Original", img_output)
 
   # Wait for a key press and check if it is 'q' or if the counter reaches the target amount
   key = cv2.waitKey(1) & 0xFF
-  if key == ord('q') or counter == target_amount:
+  if key == ord('q'):
     # Break out of the loop and stop capturing frames
     break
 
