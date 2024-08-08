@@ -1,0 +1,34 @@
+Meachine-Learning/
+├── Documentations/
+├── Project/
+│   ├── Classification-Tasks/
+│   │   ├── Sign-Language-Translator-(DL)/
+│   │   │   ├── Asssets/
+│   │   │   │   ├── Datasets/
+│   │   │   │   │   ├── SIBI dataset/
+│   │   │   │   │   │   ├── Train
+│   │   │   │   │   │   │   ├── A
+│   │   │   │   │   │   │   ├── B
+│   │   │   │   │   │   │   ├── C
+│   │   │   │   │   │   │   ├── D
+│   │   │   │   │   │   ├── Test/
+│   │   │   │   ├── Model/
+│   │   │   ├── notebooks/
+│   │   │   │   ├── data_preparation.ipynb
+│   │   │   │   ├── model_experimentation.ipynb
+│   │   │   │   └── visualization.ipynb
+│   │   │   ├── src/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── data_loader.py
+│   │   │   │   ├── preprocess.py
+│   │   │   │   ├── model.py
+│   │   │   │   ├── train.py
+│   │   │   │   ├── evaluate.py
+│   │   │   │   └── predict.py
+│   │   │   ├── tests/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── test_data_loader.py
+│   │   │   │   ├── test_preprocess.py
+│   │   │   │   └── test_model.py
+│   │   │   ├── config.py
+────────────└── requirements.txt
