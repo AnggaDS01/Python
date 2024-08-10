@@ -12,3 +12,5 @@ class_paths = glob.glob(os.path.join(DATASET_PATH, 'Train', '*'))
 # Mengambil nama folder sebagai kelas
 CLASSES_LIST = [os.path.basename(label) for label in class_paths]
 CLASSES_LIST.sort()
+
+MODEL_PATH = os.path.join(BASE_PATH, 'Assets', 'Model', 'SIBI_effecientnetb0_model.keras')

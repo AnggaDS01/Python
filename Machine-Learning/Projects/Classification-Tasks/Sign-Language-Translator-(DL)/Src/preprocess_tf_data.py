@@ -39,3 +39,12 @@ def augment_image(image, label):
 def get_nan_in_data(image, keypoint):
     get_nan_in_data = tf.reduce_any(tf.math.is_nan(keypoint))
     return get_nan_in_data
+
+def processing_data_train_to_VGG_input(image, label):
+    image_rgb = tf.image.grayscale_to_rgb(image)
+    return image_rgb, label
+
+def processing_data_test_to_VGG_input(image):
+    image_to_gray = tf.image.rgb_to_grayscale(image)
+    image_rgb = tf.image.grayscale_to_rgb(image_to_gray)
+    return image_rgb

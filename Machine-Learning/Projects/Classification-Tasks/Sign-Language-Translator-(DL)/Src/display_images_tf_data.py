@@ -3,7 +3,7 @@ import tensorflow as tf
 import numpy as np
 import math
 
-def show_multiple_images_in_tf_dataset(
+def show_multiple_images_in_tf_data(
         dataset, 
         num_images, 
         figsize_per_image=(2, 2),
@@ -42,4 +42,36 @@ def show_multiple_images_in_tf_dataset(
             plt.title(classes_list[tf.argmax(label).numpy()])
         plt.axis('off')
     
+    plt.show()
+
+def show_multiple_images_with_label_pred_tf_data(
+        model,
+        dataset,
+        num_images,
+        figsize_per_image=(2, 2),
+        classes_list=None
+    ):
+
+    # Shuffle and take a subset of the dataset
+    dataset = dataset.shuffle(buffer_size=dataset.cardinality().numpy()).take(num_images)
+
+    # Calculate the number of rows and columns needed
+    num_columns = math.ceil(math.sqrt(num_images))
+    num_rows = math.ceil(num_images / num_columns)
+    figsize = (num_columns * figsize_per_image[0], num_rows * figsize_per_image[1])
+
+    # Create plot
+    plt.figure(figsize=figsize)
+
+    for idx, image in enumerate(dataset):
+        image = tf.expand_dims(image, axis=0)
+        label = model.predict(image, verbose=0)
+        label = tf.squeeze(label)
+        alphabet_label = classes_list[tf.argmax(label).numpy()]
+
+        plt.subplot(num_rows, num_columns, idx + 1)
+        plt.imshow(np.squeeze(image), cmap='gray')
+        plt.title(alphabet_label)
+        plt.axis('off')
+
     plt.show()
