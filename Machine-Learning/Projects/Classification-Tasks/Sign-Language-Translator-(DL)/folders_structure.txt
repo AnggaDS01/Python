@@ -1,30 +1,28 @@
 Sign-Language-Translator-(DL)/
-│   │   │   ├── Assets/
-│   │   │   │   ├── Datasets/
-│   │   │   │   │   ├── SIBI dataset/
-│   │   │   │   │   │   ├── Train
-│   │   │   │   │   │   │   ├── A
-│   │   │   │   │   │   │   ├── B
-│   │   │   │   │   │   │   ├── C
-│   │   │   │   │   │   │   ├── D
-│   │   │   │   │   │   ├── Test/
-│   │   │   │   ├── Model/
-│   │   │   ├── notebooks/
-│   │   │   │   ├── data_preparation.ipynb
-│   │   │   │   ├── model_experimentation.ipynb
-│   │   │   │   └── visualization.ipynb
-│   │   │   ├── src/
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── data_loader.py
-│   │   │   │   ├── preprocess.py
-│   │   │   │   ├── model.py
-│   │   │   │   ├── train.py
-│   │   │   │   ├── evaluate.py
-│   │   │   │   └── predict.py
-│   │   │   ├── tests/
-│   │   │   │   ├── __init__.py
-│   │   │   │   ├── test_data_loader.py
-│   │   │   │   ├── test_preprocess.py
-│   │   │   │   └── test_model.py
-│   │   │   ├── config.py
+├── Assets/
+│   ├── Datasets/
+│   │   ├── SIBI dataset/
+│   │   │   ├── Train/
+│   │   │   │   ├── A
+│   │   │   │   ├── :
+│   │   │   │   ├── :
+│   │   │   │   └── Z
+│   │   │   ├── Test/
+│   │   │   ├── SIBI_test_dataset.tfrecord/
+│   │   │   └── SIBI_train_dataset.tfrecord/
+│   ├── Model/
+├── Notebooks/
+│   ├── data_preparation.ipynb
+│   └── model_experimentation.ipynb
+├── Src/
+│   ├── __init__.py
+│   ├── display_images_tf_data.py
+│   ├── model.py
+│   ├── preprocess_tf_data.py
+│   ├── show_info_tf_data.py
+│   └── tf_data_split.py
+├── Tests/
+│   ├── predict_gesture_opencv.py
+│   ├── test_preprocess.py
+├── config.py
 ────────────└── requirements.txt
