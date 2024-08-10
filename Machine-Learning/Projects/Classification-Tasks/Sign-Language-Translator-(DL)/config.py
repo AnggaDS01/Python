@@ -1,3 +1,4 @@
+import tensorflow as tf
 import os
 import glob
 
@@ -23,3 +24,6 @@ OFFSET_PREP_IMAGE_FOR_PREDDICTION = 10
 
 BATCH_SIZE = 32
 TRAIN_PROPORTION = 0.9
+OPTIMIZER = tf.keras.optimizers.Adam(learning_rate=0.0001)
+LOSS=tf.keras.losses.CategoricalCrossentropy()
+METRICS=['accuracy']

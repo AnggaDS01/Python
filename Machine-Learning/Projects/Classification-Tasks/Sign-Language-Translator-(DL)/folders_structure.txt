@@ -1,9 +1,5 @@
-Meachine-Learning/
-├── Documentations/
-├── Project/
-│   ├── Classification-Tasks/
-│   │   ├── Sign-Language-Translator-(DL)/
-│   │   │   ├── Asssets/
+Sign-Language-Translator-(DL)/
+│   │   │   ├── Assets/
 │   │   │   │   ├── Datasets/
 │   │   │   │   │   ├── SIBI dataset/
 │   │   │   │   │   │   ├── Train
