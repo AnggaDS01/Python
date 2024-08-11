@@ -5,37 +5,44 @@ import glob
 __all__ = [
     'BASE_PATH', 
     'DATASET_PATH', 
+    'TRAINING_PATH',
     'TEST_PATH', 
     'CLASSES_LIST', 
     'MODEL_PATH', 
-    'INPUT_SHAPE', 
     'IMAGE_SIZE', 
-    'OFFSET_PREP_IMAGE_FOR_PREDDICTION'
+    'INPUT_SHAPE', 
+    'OFFSET_PREP_IMAGE_FOR_PREDICTION', 
+    'BATCH_SIZE', 
+    'TRAIN_PROPORTION', 
+    'OPTIMIZER', 
+    'LOSS', 
+    'METRICS'
 ]
 
-BASE_PATH=os.path.dirname(os.path.abspath(__file__))
-DATASET_PATH=os.path.join(BASE_PATH, 'Assets', 'Datasets', 'SIBI dataset')
+# Base paths
+BASE_PATH = os.path.dirname(os.path.abspath(__file__))
+ASSETS_PATH = os.path.join(BASE_PATH, 'Assets')
+DATASET_PATH = os.path.join(ASSETS_PATH, 'Datasets', 'SIBI dataset')
+MODEL_PATH = os.path.join(ASSETS_PATH, 'Model', 'SIBI_effecientnetb0_model.keras')
 
-TRAINING_PATH=os.path.join(DATASET_PATH, 'Train', '*', '*')
-TEST_PATH=os.path.join(DATASET_PATH, 'Test', '*')
+# Dataset paths
+TRAINING_PATH = os.path.join(DATASET_PATH, 'Train', '*', '*')
+TEST_PATH = os.path.join(DATASET_PATH, 'Test', '*')
 
-_class_paths=glob.glob(os.path.join(DATASET_PATH, 'Train', '*'))
+# Class list extraction
+_class_paths = glob.glob(os.path.join(DATASET_PATH, 'Train', '*'))
+CLASSES_LIST = sorted([os.path.basename(label) for label in _class_paths])
 
-# Mengambil nama folder sebagai kelas
-CLASSES_LIST=[os.path.basename(label) for label in _class_paths]
-CLASSES_LIST.sort()
+# Image processing settings
+IMAGE_SIZE = (224, 224)
+INPUT_SHAPE = (*IMAGE_SIZE, 3)
+OFFSET_PREP_IMAGE_FOR_PREDICTION = 10
 
-MODEL_PATH=os.path.join(BASE_PATH, 'Assets', 'Model', 'SIBI_effecientnetb0_model.keras')
+# Training settings
+BATCH_SIZE = 32
+TRAIN_PROPORTION = 0.9
 
-IMAGE_SIZE=(224, 224)
-INPUT_SHAPE=(224, 224, 3)
-OFFSET_PREP_IMAGE_FOR_PREDDICTION=10
-
-BATCH_SIZE=32
-TRAIN_PROPORTION=0.9
-OPTIMIZER=tf.keras.optimizers.Adam(learning_rate=0.0001)
-LOSS=tf.keras.losses.CategoricalCrossentropy()
-METRICS=['accuracy']
-
-### MINTA BENERIN CHAT GPT, APAKAH PERLU ADA TAMBAHAN, DAN JUGA SUSUNANNYA DI PERBAIKI
-### PERBAIKI BAGIAN PREDICT GESTURE OPENCV AGAR LEBIH MODULAR
+# Model settings
+OPTIMIZER = tf.keras.optimizers.Adam(learning_rate=0.0001)
+LOSS = tf.keras.losses.CategoricalCrossentropy()
+METRICS = ['accuracy']
