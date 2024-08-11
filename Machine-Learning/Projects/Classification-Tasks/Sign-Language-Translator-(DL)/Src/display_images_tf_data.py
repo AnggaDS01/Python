@@ -5,9 +5,33 @@ import math
 
 class Visualizer:
     def __init__(self, figsize_per_image=(2, 2)):
+        """
+        Initializes the Visualizer with the size of each image in the grid.
+
+        Args:
+            figsize_per_image (tuple): Size (width, height) of each image in inches.
+        """
         self.figsize_per_image = figsize_per_image
 
     def show_multiple_images_in_tf_data(self, dataset, num_images, classes_list=None):
+        """
+        Display multiple images from a TensorFlow dataset.
+
+        Args:
+            dataset (tf.data.Dataset): TensorFlow dataset containing images.
+            num_images (int): Number of images to display.
+            classes_list (list, optional): List of class names for labeling. Defaults to None.
+
+        Returns:
+            None: Displays the images using matplotlib.
+
+        Example:
+            >>> import tensorflow as tf
+            >>> from your_module import Visualizer
+            >>> dataset = tf.data.Dataset.from_tensor_slices(images)  # Replace with actual dataset
+            >>> visualizer = Visualizer(figsize_per_image=(4, 4))
+            >>> visualizer.show_multiple_images_in_tf_data(dataset, num_images=9, classes_list=classes_list)
+        """
         # Shuffle and take a subset of the dataset
         dataset = dataset.shuffle(buffer_size=dataset.cardinality().numpy()).take(num_images)
         
@@ -42,6 +66,26 @@ class Visualizer:
         plt.show()
 
     def show_multiple_images_with_label_pred_tf_data(self, model, dataset, num_images, classes_list=None):
+        """
+        Display multiple images from a TensorFlow dataset with predicted labels.
+
+        Args:
+            model (tf.keras.Model): Trained TensorFlow/Keras model for predictions.
+            dataset (tf.data.Dataset): TensorFlow dataset containing images.
+            num_images (int): Number of images to display.
+            classes_list (list, optional): List of class names for labeling. Defaults to None.
+
+        Returns:
+            None: Displays the images with predicted labels using matplotlib.
+
+        Example:
+            >>> import tensorflow as tf
+            >>> from your_module import Visualizer
+            >>> model = tf.keras.models.load_model('path_to_model')
+            >>> dataset = tf.data.Dataset.from_tensor_slices(images)  # Replace with actual dataset
+            >>> visualizer = Visualizer(figsize_per_image=(4, 4))
+            >>> visualizer.show_multiple_images_with_label_pred_tf_data(model, dataset, num_images=9, classes_list=classes_list)
+        """
         # Shuffle and take a subset of the dataset
         dataset = dataset.shuffle(buffer_size=dataset.cardinality().numpy()).take(num_images)
 
