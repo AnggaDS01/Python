@@ -62,11 +62,11 @@ class PreprocessingPipeline:
         return image, label
 
     @tf.autograph.experimental.do_not_convert
-    def get_nan_in_data(self, image, keypoint):
+    def get_nan_in_data(self, image, label):
         """
-        Public method untuk memeriksa apakah ada NaN dalam data keypoint.
+        Public method untuk memeriksa apakah ada NaN dalam data label.
         """
-        return tf.reduce_any(tf.math.is_nan(keypoint))
+        return tf.reduce_any(tf.math.is_nan(label))
 
     @tf.autograph.experimental.do_not_convert
     def processing_data_train_to_VGG_input(self, image, label):
