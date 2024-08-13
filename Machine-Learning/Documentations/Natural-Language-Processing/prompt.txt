@@ -5,6 +5,6 @@
 
 =======================================
 ### Teks tersebut merupakan lanjutan pembahasan pada teks sebelumnya.
-### Bisakah kamu menjelaskan Seolah-olah kamu adalah seorang professor ahli Natural Language Processing, yang menjelaskan secara detail, mudah dan menarik untuk dipahami, kepada anak berumur 17 tahun.
+### Bisakah kamu menjelaskan Seolah-olah kamu adalah seorang professor ahli Natural Language Processing, yang menjelaskan secara detail, mudah dan menarik untuk dipahami, kepada anak berumur 19 tahun.
 ### Tuliskan di markdown untuk kebutuhan markdown saya, sebagai catatan seorang mahasiswa yang sedang belajar
 ### Jelaskan dengan bahasa Indonesia yang tidak terlalu ilmiah.
