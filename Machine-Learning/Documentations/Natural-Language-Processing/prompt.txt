@@ -3,6 +3,12 @@
 ### Tuliskan di markdown untuk kebutuhan markdown saya, sebagai catatan seorang mahasiswa yang sedang belajar
 ### Jelaskan dengan bahasa Indonesia yang tidak terlalu ilmiah.
 
+======================================= JIKA ADA PERSAMAAN
+### Teks di atas merupakan potongan dari suatu pembahasan namun masih belum utuh atau sempurna. dan saya masih kebingunan untuk memahami potong teks dari buku tersebut.
+### Bisakah kamu menjelaskan Seolah-olah kamu adalah seorang professor ahli Natural Language Processing, yang menjelaskan secara detail, dengan contoh yang mudah dan menarik untuk dipahami, kepada anak berumur 19 tahun, serta beri rumus atau persamaan yang bersangkutan berdasarkan teks tersebut.
+### Tuliskan di markdown untuk kebutuhan markdown saya, sebagai catatan seorang mahasiswa yang sedang belajar
+### Jelaskan dengan bahasa Indonesia yang tidak terlalu ilmiah.
+
 =======================================
 ### Teks tersebut merupakan lanjutan pembahasan pada teks sebelumnya.
 ### Bisakah kamu menjelaskan Seolah-olah kamu adalah seorang professor ahli Natural Language Processing, yang menjelaskan secara detail, mudah dan menarik untuk dipahami, kepada anak berumur 19 tahun.

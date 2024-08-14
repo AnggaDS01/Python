@@ -26,7 +26,7 @@ __all__ = [
 BASE_PATH = os.path.dirname(os.path.abspath(__file__))
 ASSETS_PATH = os.path.join(BASE_PATH, 'Assets')
 DATASET_PATH = os.path.join(ASSETS_PATH, 'Datasets', 'SMSSpamCollection')
-MODEL_PATH = os.path.join(ASSETS_PATH, 'Model', 'spamdetection_model_v2.keras')
+MODEL_PATH = os.path.join(ASSETS_PATH, 'Model', 'spamdetection_model.keras')
 
 # text processing settings
 INPUT_SHAPE_MODEL_V1 = (3,)

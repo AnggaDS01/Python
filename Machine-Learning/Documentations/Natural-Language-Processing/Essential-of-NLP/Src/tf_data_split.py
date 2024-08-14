@@ -1,7 +1,7 @@
 import tensorflow as tf
 
 class DatasetSplitter:
-    def __init__(self, batch_size=64, train_split=0.9, shuffle_buffer_size=None):
+    def __init__(self, batch_size=64, train_split=0.9, shuffle_buffer_size=None, seed=None):
         """
         Initialize the DatasetSplitter with default or provided parameters.
 
@@ -13,6 +13,7 @@ class DatasetSplitter:
         self.batch_size = batch_size
         self.train_split = train_split
         self.shuffle_buffer_size = shuffle_buffer_size
+        self.seed = seed
 
     def split_and_prepare(self, dataset):
         """
@@ -24,6 +25,8 @@ class DatasetSplitter:
         Returns:
             tuple: A tuple containing the training and validation datasets, both batched and prefetched.
         """
+        tf.random.set_seed(self.seed)
+
         dataset_shuffled = self._shuffle_dataset(dataset)
         train_size = int(self.train_split * len(dataset))
 
@@ -40,7 +43,7 @@ class DatasetSplitter:
     def _shuffle_dataset(self, dataset):
         if self.shuffle_buffer_size is None:
             self.shuffle_buffer_size = len(dataset)
-        return dataset.shuffle(self.shuffle_buffer_size)
+        return dataset.shuffle(self.shuffle_buffer_size, seed=self.seed)
 
     def _batch_and_prefetch(self, dataset):
         return dataset.batch(self.batch_size).prefetch(tf.data.AUTOTUNE)
