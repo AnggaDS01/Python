@@ -36,7 +36,6 @@ class PreprocessingPipeline:
         if label_idx_from_path is not None:
             split_img_path = tf.strings.split(image_path, os.path.sep)
             label = split_img_path[label_idx_from_path]
-            label = tf.strings.as_string(label)
             return image, label
         else:
             return image
