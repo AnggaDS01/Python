@@ -17,6 +17,6 @@ setup(
     version='0.0.0',
     author='AnggaDS/Mas brams',
     author_email='anggadwisunarto3@gmail.com',
-    package_data=find_packages(),
+    packages=find_packages(),
     install_requires=get_requirements('requirements.txt')
 )
