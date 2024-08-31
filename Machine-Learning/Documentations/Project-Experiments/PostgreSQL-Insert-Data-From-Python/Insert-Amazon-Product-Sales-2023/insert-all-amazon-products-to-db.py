@@ -65,7 +65,6 @@ if __name__ == "__main__":
                     print("=".center(100, "="))
                     count_data += 1
 
-
         connection.commit()
         print(f'Total Sebanyak {count_data} Tables Data Berhasil Diinput ke Database')
         cursor.close()
