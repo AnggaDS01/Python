@@ -1,3 +1,14 @@
+**/Documentations/**/Assets/Advanced-Natural-Language-Processing-with-TensorFlow-2-master/
+**/Documentations/**/Assets/Modern-Computer-Vision-with-PyTorch-2E-main/
+**/Documentations/**/Assets/MasteringPyTorchV2-main/
+
+**/Documentations/**/Assets/Datasets/
+**/Documentations/**/Assets/Model/
+**/Documentations/**/Assets/Literature/
+
+**/Projects/**/Assets/Datasets/
+**/Projects/**/Assets/Model/
+
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
@@ -158,14 +169,3 @@ cython_debug/
 #  and can be added to the global gitignore or merged into this file.  For a more nuclear
 #  option (not recommended) you can uncomment the following to ignore the entire idea folder.
 #.idea/
-
-**/Documentations/**/Assets/Advanced-Natural-Language-Processing-with-TensorFlow-2-master/
-**/Documentations/**/Assets/Modern-Computer-Vision-with-PyTorch-2E-main/
-**/Documentations/**/Assets/MasteringPyTorchV2-main/
-
-**/Documentations/**/Assets/Datasets/
-**/Documentations/**/Assets/Model/
-**/Documentations/**/Assets/Literature/
-
-**/Projects/**/Assets/Datasets/
-**/Projects/**/Assets/Model/
