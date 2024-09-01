@@ -1,5 +1,2 @@
-matplotlib==3.9.2
-numpy==2.1.0
-pandas==2.2.2
-scikit_learn==1.5.1
--e .
+setuptools==49.2.1
+# -e .
