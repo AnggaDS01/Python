@@ -4,7 +4,7 @@ import logging
 import os
 
 LOG_FILE = f"{datetime.now().strftime('%m-%d-%Y_%H-%M-%S')}.log"
-cwd_path = Path(os.path.abspath(__file__)).parent.parent
+cwd_path = Path(os.path.dirname(__file__)).parent
 logs_path = os.path.join(cwd_path, "logs", LOG_FILE)
 os.makedirs(logs_path, exist_ok=True)
 
@@ -16,5 +16,5 @@ logging.basicConfig(
     level=logging.INFO,
 )
 
-# if __name__ == "__main__":
-#     logging.info("Logging has started")
+if __name__ == "__main__":
+    logging.info("Logging has started")
