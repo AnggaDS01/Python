@@ -19,7 +19,7 @@ class ModelTrainer:
     def __init__(self):
         self.model_trainer_config = ModelTrainerConfig()
 
-    def initiate_model_trainer(self, train_df, test_df, model):
+    def initiate_model_trainer(self, train_df, test_df, model, hyper_params):
         try:
             logging.info('Split training and test input data')
             target_column_name = 'species'
@@ -39,6 +39,7 @@ class ModelTrainer:
                 X_test,
                 y_test,
                 model,
+                hyper_params
             )
 
             if model_report['accuracy'] < .8:

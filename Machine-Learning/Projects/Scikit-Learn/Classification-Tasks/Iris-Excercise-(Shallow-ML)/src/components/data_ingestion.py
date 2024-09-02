@@ -54,6 +54,12 @@ class DataIngestion:
         
 if __name__ == "__main__":
     model = QuadraticDiscriminantAnalysis()
+    # Kombinasi parameter yang akan diuji oleh GridSearchCV
+    param_grid = {
+        'reg_param': [0.0, 0.01, 0.1, 0.5, 0.9, 1.0],  # Nilai regularisasi
+        'tol': [1e-4, 1e-3, 1e-2, 1e-1],              # Toleransi untuk konvergensi
+        'store_covariance': [True, False],            # Apakah menyimpan covariance matrices atau tidak
+    }
 
     obj = DataIngestion()
     data_path, train_data_path, test_data_path = obj.initiate_data_ingestion()
@@ -62,6 +68,8 @@ if __name__ == "__main__":
     train_df, test_df, categorical_target_name_list, _ = data_transformation.initiate_data_transformation(data_path, train_data_path, test_data_path)
 
     model_trainer = ModelTrainer()
-    model_trained, model_report = model_trainer.initiate_model_trainer(train_df, test_df, model)
+    model_trained, model_report = model_trainer.initiate_model_trainer(train_df, test_df, model, param_grid)
 
     print(model_report['classification_report'])
+    print(model_report['best_parameters'])
+    print(model_report['best_cross_validastion_score'])

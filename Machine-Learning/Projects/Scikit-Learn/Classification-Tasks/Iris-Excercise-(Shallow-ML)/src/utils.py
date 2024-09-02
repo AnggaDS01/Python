@@ -3,6 +3,7 @@ import sys
 import os
 import dill
 
+from sklearn.model_selection import GridSearchCV # , RandomizedSearchCV
 from sklearn.metrics import ( 
     accuracy_score, 
     precision_score, 
@@ -10,6 +11,7 @@ from sklearn.metrics import (
     classification_report, 
     confusion_matrix
 )
+
 
 def save_object(file_path, obj):
     try:
@@ -22,13 +24,24 @@ def save_object(file_path, obj):
     except Exception as e:
         raise CustomExeption(e, sys)
 
-def evaluate_model(X_train, y_train, X_test, y_test, model):
+def evaluate_model(X_train, y_train, X_test, y_test, model, hyper_params):
     try:
         # Train the model
-        model.fit(X_train, y_train)
-        
+        # Inisialisasi GridSearchCV
+        grid_search = GridSearchCV(
+            estimator=model, 
+            param_grid=hyper_params, 
+            cv=5, 
+            scoring='accuracy', 
+            n_jobs=-1, 
+            verbose=2
+        )
+
+        grid_search.fit(X_train, y_train)
+
+        best_model = grid_search.best_estimator_
         # Make predictions
-        y_pred = model.predict(X_test)
+        y_pred = best_model.predict(X_test)
         
         # Calculate evaluation metrics
         accuracy = accuracy_score(y_test, y_pred)
@@ -43,10 +56,12 @@ def evaluate_model(X_train, y_train, X_test, y_test, model):
             'precision': precision,
             'recall': recall,
             'classification_report': report,
-            'confusion_matrix': confusion,  
+            'confusion_matrix': confusion,
+            'best_parameters': grid_search.best_params_,
+            'best_cross_validastion_score': round(grid_search.best_score_, 4)
         }
         
-        return model, evaluation_report
+        return best_model, evaluation_report
     
     except Exception as e:
         raise CustomExeption(e, sys)
