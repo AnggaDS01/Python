@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Iris Flower Prediction</title>
+    <!-- Bootstrap CSS -->
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <style>
+        body {
+            background-color: #f8f9fa;
+        }
+        .container {
+            margin-top: 50px;
+        }
+        .card {
+            padding: 20px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+        }
+        .btn-primary {
+            background-color: #007bff;
+            border: none;
+        }
+        .btn-primary:hover {
+            background-color: #0056b3;
+        }
+        .result-container {
+            margin-top: 20px;
+            text-align: center;
+        }
+        .result-badge {
+            font-size: 1.2em;
+            padding: 10px 20px;
+            color: white;
+        }
+        .alert-success {
+            background-color: #28a745;
+        }
+        .alert-warning {
+            background-color: #ffc107;
+        }
+        .alert-danger {
+            background-color: #dc3545;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <h2 class="text-center">Iris Flower Prediction</h2>
+                    <p class="text-center">Enter the features of the iris flower to predict its species.</p>
+                    <form method="POST" action="{{ url_for('prediction')}}">
+                        <div class="form-group">
+                            <label for="sepal_length">Sepal Length (cm)</label>
+                            <input type="number" step="0.01" class="form-control" id="sepal_length" name="sepal_length" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="sepal_width">Sepal Width (cm)</label>
+                            <input type="number" step="0.01" class="form-control" id="sepal_width" name="sepal_width" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="petal_length">Petal Length (cm)</label>
+                            <input type="number" step="0.01" class="form-control" id="petal_length" name="petal_length" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="petal_width">Petal Width (cm)</label>
+                            <input type="number" step="0.01" class="form-control" id="petal_width" name="petal_width" required>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-block">Predict</button>
+                    </form>
+                    <!-- Display the prediction result dynamically -->
+                    {% if results %}
+                    <div class="result-container">
+                        <h3>THE PREDICTION IS:</h3>
+                        <div class="alert {% if results == 'setosa' %}alert-success{% elif results == 'versicolor' %}alert-warning{% else %}alert-danger{% endif %} result-badge">
+                            {{ results | capitalize }}
+                        </div>
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Bootstrap JS and dependencies -->
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.9.2/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

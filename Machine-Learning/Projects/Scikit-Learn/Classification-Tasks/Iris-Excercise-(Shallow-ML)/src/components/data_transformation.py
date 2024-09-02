@@ -14,10 +14,10 @@ from logger import logging
 from utils import save_object
 
 import pandas as pd
-import numpy as np
 
 class DataTransformationConfig:
-    preprocessor_obj_path = os.path.join("artifacts", "preprocessor.pkl")
+    features_preprocessor_obj_path = os.path.join("artifacts", "features_preprocessor.pkl")
+    label_preprocessor_obj_path = os.path.join("artifacts", "label_preprocessor.pkl")
 
 class DataTansformation:
     def __init__(self):
@@ -25,10 +25,10 @@ class DataTansformation:
 
     def get_data_transformer_object(self, data_path):
         try:
-            df = pd.read_csv(data_path)
+            df = pd.read_csv(data_path, nrows=150)
             
-            target_column_name = ['species']
-            features_df = df.drop(columns=target_column_name)
+            label_column_name = ['species']
+            features_df = df.drop(columns=label_column_name)
             
             numeric_columns = features_df.select_dtypes(include=['number']).columns
             # category_columns = features_df.select_dtypes(include=['object']).columns
@@ -39,84 +39,114 @@ class DataTansformation:
                 ]
             )
 
-            target_pipeline = Pipeline(
+            label_pipeline = Pipeline(
                 steps=[
                     ('ordinal_encoder', OrdinalEncoder()),
                 ]
             )
 
             logging.info(f'Numerical columns: {numeric_columns}')
-            logging.info(f'Target column category: {target_column_name}')
+            logging.info(f'label column category: {label_column_name}')
 
-            preprocessor = ColumnTransformer(
+            features_preprocessor_obj = ColumnTransformer(
                 [
                     ("numerical_pipeline", num_pipeline, numeric_columns),
-                    ("target_pipeline", target_pipeline, target_column_name),
                 ]
             )
 
-            return preprocessor
+            label_preprocessor_obj = ColumnTransformer(
+                [
+                    ("label_pipeline", label_pipeline, label_column_name),
+                ]
+            )
+
+            return features_preprocessor_obj, label_preprocessor_obj
 
         except Exception as e:
             raise CustomExeption(e, sys)
     
     def initiate_data_transformation(self, data_path, train_path, test_path):
         try:
+            logging.info('Read train and test data completed')
             df = pd.read_csv(data_path)
             train_df = pd.read_csv(train_path)
             test_df = pd.read_csv(test_path)
 
-            logging.info('Read train and test data completed')
-            logging.info('Obtaining preprocessing object')
+            label_column_name = ['species']
 
-            preprocessing_obj = self.get_data_transformer_object(data_path)
+            feature_train_df = train_df.drop(columns=label_column_name)
+            label_train_df = train_df[label_column_name]
+
+            feature_test_df = test_df.drop(columns=label_column_name)
+            label_test_df = test_df[label_column_name]
+
+            logging.info('Obtaining preprocessing object')
+            features_preprocessor_obj, label_preprocessor_obj = self.get_data_transformer_object(data_path)
 
             logging.info(f'Applying preprocessing object on training dataframe and testing dataframe')
+            features_preprocessor_obj.fit(df)
+            label_preprocessor_obj.fit(df)
 
-            preprocessing_obj.fit(df)
-            categorical_target_name_list = preprocessing_obj.named_transformers_['target_pipeline'] \
-                                        .named_steps['ordinal_encoder'] \
-                                        .categories_[0]
+            feature_train_df[feature_train_df.columns] = features_preprocessor_obj.transform(feature_train_df)
+            feature_test_df[feature_test_df.columns] = features_preprocessor_obj.transform(feature_test_df)
 
-            train_df[train_df.columns] = preprocessing_obj.transform(train_df)
-            test_df[test_df.columns] = preprocessing_obj.transform(test_df)
+            label_train_df = pd.DataFrame(label_preprocessor_obj.transform(label_train_df), columns=label_train_df.columns)
+            label_test_df = pd.DataFrame(label_preprocessor_obj.transform(label_test_df), columns=label_test_df.columns)
 
-            logging.info('Saved preprocessing object.')
-
-            # ==================== Uncomment Jika Kasusnya Regresi ====================
-            # df = pd.read_csv(data_path)
-            # train_df = pd.read_csv(train_path)
-            # test_df = pd.read_csv(test_path)
-
-            # target_column_name = 'species'
+            train_df_transformed = pd.concat([feature_train_df.reset_index(drop=True), label_train_df], axis=1)
+            test_df_transformed = pd.concat([feature_test_df.reset_index(drop=True), label_test_df], axis=1)
             
-            # feature_train_df = train_df.drop(columns=target_column_name)
-            # target_train_df = train_df[target_column_name]
-
-            # feature_test_df = test_df.drop(columns=target_column_name)
-            # target_test_df = test_df[target_column_name]
-
-            # preprocessing_obj = self.get_data_transformer_object(data_path)
-            # preprocessing_obj.fit(df)
-
-            # feature_train_df[feature_train_df.columns] = preprocessing_obj.transform(feature_train_df)
-            # feature_test_df[feature_test_df.columns] = preprocessing_obj.transform(feature_test_df)
-
-            # train_df_transformed = pd.concat([feature_train_df, target_train_df], axis=1)
-            # test_df_transformed = pd.concat([feature_test_df, target_test_df], axis=1)
-            # ==================== Uncomment Jika Kasusnya Regresi ====================
+            logging.info('Saved preprocessing object.')
+            save_object(
+                file_path=self.data_transformation_config.features_preprocessor_obj_path,
+                obj=features_preprocessor_obj
+            )
 
             save_object(
-                file_path=self.data_transformation_config.preprocessor_obj_path,
-                obj=preprocessing_obj
+                file_path=self.data_transformation_config.label_preprocessor_obj_path,
+                obj=label_preprocessor_obj
             )
 
             return (
-                train_df,
-                test_df,
-                categorical_target_name_list,
-                self.data_transformation_config.preprocessor_obj_path
+                train_df_transformed,
+                test_df_transformed,
+                self.data_transformation_config.features_preprocessor_obj_path,
+                self.data_transformation_config.label_preprocessor_obj_path,
             )
 
         except Exception as e:
             raise CustomExeption(e, sys)
+        
+
+
+
+
+
+
+
+
+
+
+
+# ==================== Uncomment Jika Kasusnya Regresi ====================
+# df = pd.read_csv(data_path)
+# train_df = pd.read_csv(train_path)
+# test_df = pd.read_csv(test_path)
+
+# label_column_name = 'species'
+
+# feature_train_df = train_df.drop(columns=label_column_name)
+# label_train_df = train_df[label_column_name]
+
+# feature_test_df = test_df.drop(columns=label_column_name)
+# label_test_df = test_df[label_column_name]
+
+# preprocessing_obj = self.get_data_transformer_object(data_path)
+# preprocessing_obj.fit(df)
+
+# feature_train_df[feature_train_df.columns] = preprocessing_obj.transform(feature_train_df)
+# feature_test_df[feature_test_df.columns] = preprocessing_obj.transform(feature_test_df)
+
+# train_df_transformed = pd.concat([feature_train_df, label_train_df], axis=1)
+# test_df_transformed = pd.concat([feature_test_df, label_test_df], axis=1)
+# ==================== Uncomment Jika Kasusnya Regresi ====================

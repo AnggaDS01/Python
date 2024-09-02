@@ -65,7 +65,7 @@ if __name__ == "__main__":
     data_path, train_data_path, test_data_path = obj.initiate_data_ingestion()
 
     data_transformation = DataTansformation()
-    train_df, test_df, categorical_target_name_list, _ = data_transformation.initiate_data_transformation(data_path, train_data_path, test_data_path)
+    train_df, test_df, _, _ = data_transformation.initiate_data_transformation(data_path, train_data_path, test_data_path)
 
     model_trainer = ModelTrainer()
     model_trained, model_report = model_trainer.initiate_model_trainer(train_df, test_df, model, param_grid)
