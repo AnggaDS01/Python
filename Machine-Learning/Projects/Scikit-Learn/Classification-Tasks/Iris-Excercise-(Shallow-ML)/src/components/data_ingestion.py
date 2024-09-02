@@ -5,12 +5,13 @@ from pathlib import Path
 config_path = Path(os.path.dirname(__file__)).parent # c:\Workspace\Python\Machine-Learning\Projects\Scikit-Learn\Classification-Tasks\Iris-Excercise-(Shallow-ML)\src
 sys.path.append(str(config_path))
 
-from exeption import CustomExeption
-from logger import logging
-
 import pandas as pd
 from sklearn.model_selection import train_test_split
 from dataclasses import dataclass
+
+from exeption import CustomExeption
+from logger import logging
+from data_transformation import DataTansformation, DataTransformationConfig
 
 @dataclass
 class DataIngestionConfig:
@@ -42,6 +43,7 @@ class DataIngestion:
             logging.info("Ingestian of the data is completed")
 
             return (
+                self.ingestion_config.raw_data_path,
                 self.ingestion_config.train_data_path,
                 self.ingestion_config.test_data_path
             )
@@ -50,5 +52,7 @@ class DataIngestion:
         
 if __name__ == "__main__":
     obj = DataIngestion()
-    obj.initiate_data_ingestion()
+    data_path, train_data_path, test_data_path = obj.initiate_data_ingestion()
 
+    data_transformation = DataTansformation()
+    data_transformation.initiate_data_transformation(data_path, train_data_path, test_data_path)
