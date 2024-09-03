@@ -1,7 +1,0 @@
-dill==0.3.8
-Flask==3.0.3
-numpy==2.0.2
-pandas==2.2.2
-scikit_learn==1.5.1
-setuptools==49.2.1
-# -e .
