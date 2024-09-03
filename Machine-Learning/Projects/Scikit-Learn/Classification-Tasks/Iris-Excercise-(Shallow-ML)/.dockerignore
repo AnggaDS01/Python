@@ -1,0 +1,7 @@
+__pycache__
+*.pyc
+*.pyo
+*.pyd
+env/
+venv/
+iris_classification_ml_project.egg-info
